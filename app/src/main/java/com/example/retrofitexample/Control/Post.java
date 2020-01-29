@@ -1,8 +1,6 @@
-package com.example.retrofitexample;
+package com.example.retrofitexample.Control;
 
-import com.google.gson.annotations.SerializedName;
-
-class Post {
+public class Post {
 
     private String status;
 

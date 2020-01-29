@@ -1,6 +1,7 @@
 package com.example.retrofitexample;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +10,10 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.retrofitexample.CURD.EditorActivity;
+import com.example.retrofitexample.Control.JsonPlaceHolderApi;
+import com.example.retrofitexample.Control.Post;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -24,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView textViewResult;
     private Switch aSwitch;
+    private FloatingActionButton fab;
+
     JsonPlaceHolderApi jsonPlaceHolderApi;
     public static final String TAG = "ajju";
 
@@ -34,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         textViewResult = findViewById(R.id.code);
         aSwitch = findViewById(R.id.switch1);
+        fab = findViewById(R.id.floatingActionButton);
 
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -62,6 +70,13 @@ public class MainActivity extends AppCompatActivity {
                     textViewResult.setText("");
                     controlOff();
                 }
+            }
+        });
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, EditorActivity.class));
             }
         });
     }
