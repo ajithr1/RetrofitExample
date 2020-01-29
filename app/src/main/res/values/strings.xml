@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">RetroFitExample</string>
+    <string name="switch_control">Switch Control</string>
 </resources>

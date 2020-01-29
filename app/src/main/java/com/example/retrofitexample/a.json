@@ -1,0 +1,11 @@
+{
+  "things": [
+    {
+      "entity_id": "1",
+      "property_name": "OnOff",
+      "property_type": "SWITCH",
+      "property_value": "1",
+      "thing_id": "ZB5526146540340438"
+    }
+  ]
+}
