@@ -1,4 +1,4 @@
-package com.example.retrofitexample.CURD;
+package com.example.retrofitexample.CURD.api;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;

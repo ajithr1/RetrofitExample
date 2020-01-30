@@ -1,4 +1,4 @@
-package com.example.retrofitexample.CURD;
+package com.example.retrofitexample.CURD.activity;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
@@ -11,19 +11,20 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.retrofitexample.R;
+import com.thebluealliance.spectrum.SpectrumPalette;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class EditorActivity extends AppCompatActivity {
+public class EditorActivity extends AppCompatActivity implements EditorView{
 
     public static final String TAG = "ajju";
 
     EditText et_title, et_note;
     ProgressDialog progressDialog;
 
-    ApiInterface apiInterface;
+    SpectrumPalette palette;
+
+    int color;
+
+    EditorPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +33,23 @@ public class EditorActivity extends AppCompatActivity {
 
         et_title = findViewById(R.id.title);
         et_note = findViewById(R.id.note);
+        palette = findViewById(R.id.palette);
+
+        palette.setOnColorSelectedListener(new SpectrumPalette.OnColorSelectedListener() {
+                    @Override
+                    public void onColorSelected(int clr) {
+                        color = clr;
+                    }
+                }
+        );
+
+        palette.setSelectedColor(getResources().getColor(R.color.white));
+        color = getResources().getColor(R.color.white);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Please Wait...");
+
+        presenter = new EditorPresenter(this);
     }
 
     @Override
@@ -49,53 +64,39 @@ public class EditorActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.save){
             String title = et_title.getText().toString().trim();
             String note = et_note.getText().toString().trim();
-            int color = -2184710;
+            int color = this.color;
 
             if (title.isEmpty()) {
                 et_title.setError("Please enter a title");
             } else if (note.isEmpty()) {
                 et_note.setError("Please enter a note");
             } else {
-                saveNote(title, note, color);
+                presenter.saveNote(title, note, color);
             }
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void saveNote(final String title, final String note, final int color) {
+
+    @Override
+    public void showProgress() {
         progressDialog.show();
+    }
 
-        apiInterface = ApiClientCurd.getRetrofit().create(ApiInterface.class);
+    @Override
+    public void hideProgress() {
+        progressDialog.dismiss();
+    }
 
-        Call<Note> call = apiInterface.saveNote(title, note, color);
+    @Override
+    public void onAddSuccess(String message) {
+        Log.d(TAG, "onAddSuccess: "+message);
+        finish();
+    }
 
-        call.enqueue(new Callback<Note>() {
-            @Override
-            public void onResponse(Call<Note> call, Response<Note> response) {
-                progressDialog.dismiss();
-
-                if (response.isSuccessful() && response.body() != null){
-
-
-
-                    boolean success = response.body().getSuccess();
-
-                    if (success){
-                        Log.d(TAG, "onResponse: "+response.body().getMessage());
-                        finish();
-                    } else {
-                        Log.d(TAG, "onResponse: "+response.body().getMessage());
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<Note> call, Throwable t) {
-                progressDialog.dismiss();
-                Log.d(TAG, "onFailure: "+t.getMessage());
-
-            }
-        });
+    @Override
+    public void onAddError(String message) {
+        Log.d(TAG, "onAddSuccess: "+message);
     }
 }

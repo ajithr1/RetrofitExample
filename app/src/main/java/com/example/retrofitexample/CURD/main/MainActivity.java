@@ -1,4 +1,4 @@
-package com.example.retrofitexample;
+package com.example.retrofitexample.CURD.main;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -7,33 +7,42 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.retrofitexample.CURD.EditorActivity;
+import com.example.retrofitexample.CURD.Model.Note;
+import com.example.retrofitexample.CURD.activity.EditorActivity;
+import com.example.retrofitexample.Control.ApiClientSwitchControl;
 import com.example.retrofitexample.Control.JsonPlaceHolderApi;
 import com.example.retrofitexample.Control.Post;
+import com.example.retrofitexample.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MainView{
 
     private TextView textViewResult;
     private Switch aSwitch;
     private FloatingActionButton fab;
+    private RecyclerView recyclerView;
 
-    JsonPlaceHolderApi jsonPlaceHolderApi;
     public static final String TAG = "ajju";
 
+    MainPresenter presenter;
+    MainAdapter adapter;
+    List<Note> notes;
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,33 +51,19 @@ public class MainActivity extends AppCompatActivity {
         textViewResult = findViewById(R.id.code);
         aSwitch = findViewById(R.id.switch1);
         fab = findViewById(R.id.floatingActionButton);
+        recyclerView = findViewById(R.id.recycle);
 
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-        OkHttpClient client = new OkHttpClient.Builder()
-                .retryOnConnectionFailure(true)
-                .addInterceptor(interceptor)
-                .build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://thub-api.smartron.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .build();
-
-        jsonPlaceHolderApi = retrofit.create(JsonPlaceHolderApi.class);
-        Log.d(TAG, "onCreate: " + jsonPlaceHolderApi.toString());
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         aSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (aSwitch.isChecked()){
+                if (aSwitch.isChecked()) {
                     textViewResult.setText("");
-                    controlOn();
-                }else {
+                    MainActivity.this.controlOn();
+                } else {
                     textViewResult.setText("");
-                    controlOff();
+                    MainActivity.this.controlOff();
                 }
             }
         });
@@ -76,12 +71,18 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, EditorActivity.class));
+                MainActivity.this.startActivity(new Intent(MainActivity.this, EditorActivity.class));
             }
         });
+
+        presenter = new MainPresenter(this);
+        presenter.getData();
+        Log.d(TAG, "onCreate: MainActivity");
     }
 
     private void controlOn() {
+
+        JsonPlaceHolderApi jsonPlaceHolderApi = ApiClientSwitchControl.getRetrofit().create(JsonPlaceHolderApi.class);
 
         JsonObject jsonObject = null;
 
@@ -123,6 +124,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void controlOff() {
 
+        JsonPlaceHolderApi jsonPlaceHolderApi = ApiClientSwitchControl.getRetrofit().create(JsonPlaceHolderApi.class);
+
         JsonObject jsonObject = null;
 
         try {
@@ -159,4 +162,35 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void showLoading() {
+        //refreshLayout.setRefreshing(true);
+    }
+
+    @Override
+    public void hideLoading() {
+        //refreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onGetResult(List<Note> notes) {
+        Log.d(TAG, "onGetResult: MainActivity"+notes);
+        adapter = new MainAdapter(this, notes, listener);
+        recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onErrorLoading(String message) {
+        Log.d(TAG, "onErrorLoading: MainActivity"+message);
+    }
+
+    private MainAdapter.RecyclerViewAdapter.ItemClickListener listener = new MainAdapter.RecyclerViewAdapter.ItemClickListener() {
+        @Override
+        public void onItemClick(Note note, int position) {
+            Log.d(TAG, "onItemClick: MainActivity");
+            Toast.makeText(MainActivity.this, note.getTitle(), Toast.LENGTH_SHORT).show();
+        }
+    };
 }
