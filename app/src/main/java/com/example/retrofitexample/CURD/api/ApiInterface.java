@@ -21,10 +21,10 @@ public interface ApiInterface {
     );
 
     @GET("notes.php")
-    Call<List<Note>> getNotes();
+    Call<List<Note>> getAllNotes();
 
     @FormUrlEncoded
-    @POST("update.php")
+    @POST("edit.php")
     Call<Note> updateNote(
             @Field("id") int id,
             @Field("title") String title,

@@ -7,8 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,6 +31,8 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements MainView{
 
+    private static final int EDIT_CODE = 200;
+    private static final int ADD_CODE = 100;
     private TextView textViewResult;
     private Switch aSwitch;
     private FloatingActionButton fab;
@@ -71,13 +73,12 @@ public class MainActivity extends AppCompatActivity implements MainView{
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.this.startActivity(new Intent(MainActivity.this, EditorActivity.class));
+                MainActivity.this.startActivityForResult(new Intent(MainActivity.this, EditorActivity.class), ADD_CODE);
             }
         });
 
         presenter = new MainPresenter(this);
         presenter.getData();
-        Log.d(TAG, "onCreate: MainActivity");
     }
 
     private void controlOn() {
@@ -190,7 +191,31 @@ public class MainActivity extends AppCompatActivity implements MainView{
         @Override
         public void onItemClick(Note note, int position) {
             Log.d(TAG, "onItemClick: MainActivity");
-            Toast.makeText(MainActivity.this, note.getTitle(), Toast.LENGTH_SHORT).show();
+
+            int id = note.getId();
+            String title = note.getTitle();
+            String message = note.getNote();
+            Log.d(TAG, "onItemClick: "+message);
+            int color = note.getColor();
+
+            Intent intent = new Intent(MainActivity.this, EditorActivity.class);
+            intent.putExtra("id", id);
+            intent.putExtra("title", title);
+            intent.putExtra("message", message);
+            intent.putExtra("color", color);
+
+            startActivityForResult(intent, EDIT_CODE);
         }
     };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == ADD_CODE && resultCode == RESULT_OK){
+            presenter.getData();
+        }else if (requestCode == EDIT_CODE && resultCode == RESULT_OK){
+            presenter.getData();
+        }
+    }
 }

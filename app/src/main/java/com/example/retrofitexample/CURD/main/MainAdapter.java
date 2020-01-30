@@ -1,7 +1,6 @@
 package com.example.retrofitexample.CURD.main;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +14,6 @@ import com.example.retrofitexample.CURD.Model.Note;
 import com.example.retrofitexample.R;
 
 import java.util.List;
-
-import static com.example.retrofitexample.CURD.main.MainActivity.TAG;
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.RecyclerViewAdapter> {
 
@@ -45,12 +42,10 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.RecyclerViewAd
         holder.tv_note.setText(note.getNote());
         holder.tv_date.setText(note.getDate());
         holder.cardView.setCardBackgroundColor(note.getColor());
-        Log.d(TAG, "onBindViewHolder: "+position);
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: Adapter"+position);
                 itemClickListener.onItemClick(note, position);
             }
         });
@@ -58,7 +53,6 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.RecyclerViewAd
 
     @Override
     public int getItemCount() {
-        Log.d(TAG, "getItemCount: "+notes.size());
         return notes.size();
     }
 

@@ -28,7 +28,7 @@ class MainPresenter {
         Log.d(TAG, "getData: Presenter");
 
         ApiInterface apiInterface = ApiClientCurd.getRetrofit().create(ApiInterface.class);
-        Call<List<Note>> call = apiInterface.getNotes();
+        Call<List<Note>> call = apiInterface.getAllNotes();
 
         call.enqueue(new Callback<List<Note>>() {
             @Override

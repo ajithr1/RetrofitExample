@@ -18,7 +18,7 @@ public class Note {
     @Expose
     @SerializedName("success") private Boolean success;
     @Expose
-    @SerializedName("message") private String message;
+    @SerializedName("message") private String status;
 
 
     public int getId() {
@@ -37,12 +37,12 @@ public class Note {
         this.title = title;
     }
 
-    public String getNote() {
-        return note;
+    public String getStatus() {
+        return status;
     }
 
-    public void setNote(String note) {
-        this.note = note;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public int getColor() {
@@ -69,12 +69,11 @@ public class Note {
         this.success = success;
     }
 
-    public String getMessage() {
-        return message;
+    public String getNote() {
+        return note;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setNote(String note) {
+        this.note = note;
     }
-
 }

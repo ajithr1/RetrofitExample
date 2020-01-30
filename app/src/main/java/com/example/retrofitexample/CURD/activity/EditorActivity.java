@@ -1,6 +1,9 @@
 package com.example.retrofitexample.CURD.activity;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -22,9 +25,10 @@ public class EditorActivity extends AppCompatActivity implements EditorView{
 
     SpectrumPalette palette;
 
-    int color;
-
     EditorPresenter presenter;
+
+    int color, id;
+    String title, note;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +36,7 @@ public class EditorActivity extends AppCompatActivity implements EditorView{
         setContentView(R.layout.activity_editor);
 
         et_title = findViewById(R.id.title);
-        et_note = findViewById(R.id.note);
+        et_note = findViewById(R.id.status);
         palette = findViewById(R.id.palette);
 
         palette.setOnColorSelectedListener(new SpectrumPalette.OnColorSelectedListener() {
@@ -50,6 +54,16 @@ public class EditorActivity extends AppCompatActivity implements EditorView{
         progressDialog.setMessage("Please Wait...");
 
         presenter = new EditorPresenter(this);
+
+        Intent intent = getIntent();
+        id = intent.getIntExtra("id", 0);
+        title = intent.getStringExtra("title");
+        note = intent.getStringExtra("note");
+        color = intent.getIntExtra("color", 0);
+
+
+
+        setDataFromIntentExtra(title, note, color);
     }
 
     @Override
@@ -61,20 +75,55 @@ public class EditorActivity extends AppCompatActivity implements EditorView{
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-        if (item.getItemId() == R.id.save){
-            String title = et_title.getText().toString().trim();
-            String note = et_note.getText().toString().trim();
-            int color = this.color;
+        String title = et_title.getText().toString().trim();
+        String note = et_note.getText().toString().trim();
+        int color = this.color;
 
-            if (title.isEmpty()) {
-                et_title.setError("Please enter a title");
-            } else if (note.isEmpty()) {
-                et_note.setError("Please enter a note");
-            } else {
-                presenter.saveNote(title, note, color);
-            }
-            return true;
+        switch (item.getItemId()){
+            case R.id.save:
+
+                if (title.isEmpty()) {
+                    et_title.setError("Please enter a title");
+                } else if (note.isEmpty()) {
+                    et_note.setError("Please enter a note");
+                } else {
+                    presenter.saveNote(title, note, color);
+                }
+                return true;
+            case R.id.edit:
+
+                if (title.isEmpty()) {
+                    et_title.setError("Please enter a title");
+                } else if (note.isEmpty()) {
+                    et_note.setError("Please enter a note");
+                } else {
+                    presenter.editNote(id, title, note, color);
+                }
+                return true;
+
+            case R.id.delete:
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                alert.setTitle("Confirm Deletion");
+                alert.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        presenter.deleteNote(id);
+                        dialog.dismiss();
+                    }
+                });
+
+                alert.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                alert.show();
+                return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -98,5 +147,19 @@ public class EditorActivity extends AppCompatActivity implements EditorView{
     @Override
     public void onAddError(String message) {
         Log.d(TAG, "onAddSuccess: "+message);
+    }
+
+    private void setDataFromIntentExtra(String title, String note, int color) {
+
+        if (id != 0) {
+            et_title.setText(title);
+            et_note.setText(note);
+            palette.setSelectedColor(color);
+
+        } else {
+            palette.setSelectedColor(getResources().getColor(R.color.white));
+            color = getResources().getColor(R.color.white);
+        }
+
     }
 }
