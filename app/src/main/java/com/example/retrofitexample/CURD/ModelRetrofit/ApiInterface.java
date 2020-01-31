@@ -1,6 +1,4 @@
-package com.example.retrofitexample.CURD.api;
-
-import com.example.retrofitexample.CURD.Model.Note;
+package com.example.retrofitexample.CURD.ModelRetrofit;
 
 import java.util.List;
 

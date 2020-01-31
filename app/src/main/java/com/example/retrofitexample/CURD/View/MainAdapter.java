@@ -1,6 +1,7 @@
-package com.example.retrofitexample.CURD.main;
+package com.example.retrofitexample.CURD.View;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +11,12 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.retrofitexample.CURD.Model.Note;
+import com.example.retrofitexample.CURD.ModelRetrofit.Note;
 import com.example.retrofitexample.R;
 
 import java.util.List;
+
+import static com.example.retrofitexample.CURD.View.MainActivity.TAG;
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.RecyclerViewAdapter> {
 
@@ -25,6 +28,12 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.RecyclerViewAd
         this.context = context;
         this.notes = notes;
         this.itemClickListener = itemClickListener;
+    }
+
+    void setNotes(List<Note> notes) {
+        Log.d(TAG, "setNotes: ");
+        this.notes = notes;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -53,7 +62,12 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.RecyclerViewAd
 
     @Override
     public int getItemCount() {
+        Log.d(TAG, "getItemCount: ");
         return notes.size();
+    }
+
+    List<Note> getTodo_list() {
+        return notes;
     }
 
     static class RecyclerViewAdapter extends RecyclerView.ViewHolder{

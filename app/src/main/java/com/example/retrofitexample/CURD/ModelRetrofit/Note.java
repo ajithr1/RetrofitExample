@@ -1,4 +1,4 @@
-package com.example.retrofitexample.CURD.Model;
+package com.example.retrofitexample.CURD.ModelRetrofit;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

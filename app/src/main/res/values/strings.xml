@@ -4,4 +4,6 @@
     <string name="to_do">To do</string>
     <string name="enter_note">Enter a Note</string>
     <string name="date">date</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.retrofitexample.CURD.main;
+package com.example.retrofitexample.CURD.View;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -13,8 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.retrofitexample.CURD.Model.Note;
-import com.example.retrofitexample.CURD.activity.EditorActivity;
+import com.example.retrofitexample.CURD.ModelRetrofit.Note;
+import com.example.retrofitexample.CURD.Presenter.Presenter;
+import com.example.retrofitexample.CURD.Presenter.PresenterInterface;
 import com.example.retrofitexample.Control.ApiClientSwitchControl;
 import com.example.retrofitexample.Control.JsonPlaceHolderApi;
 import com.example.retrofitexample.Control.Post;
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements MainView{
 
     public static final String TAG = "ajju";
 
-    MainPresenter presenter;
+    PresenterInterface presenter;
     MainAdapter adapter;
     List<Note> notes;
 
@@ -49,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements MainView{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Log.d(TAG, "onCreate: ");
 
         textViewResult = findViewById(R.id.code);
         aSwitch = findViewById(R.id.switch1);
@@ -77,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements MainView{
             }
         });
 
-        presenter = new MainPresenter(this);
+        presenter = new Presenter(this);
         presenter.getData();
     }
 
@@ -165,16 +168,6 @@ public class MainActivity extends AppCompatActivity implements MainView{
     }
 
     @Override
-    public void showLoading() {
-        //refreshLayout.setRefreshing(true);
-    }
-
-    @Override
-    public void hideLoading() {
-        //refreshLayout.setRefreshing(false);
-    }
-
-    @Override
     public void onGetResult(List<Note> notes) {
         Log.d(TAG, "onGetResult: MainActivity"+notes);
         adapter = new MainAdapter(this, notes, listener);
@@ -190,7 +183,6 @@ public class MainActivity extends AppCompatActivity implements MainView{
     private MainAdapter.RecyclerViewAdapter.ItemClickListener listener = new MainAdapter.RecyclerViewAdapter.ItemClickListener() {
         @Override
         public void onItemClick(Note note, int position) {
-            Log.d(TAG, "onItemClick: MainActivity");
 
             int id = note.getId();
             String title = note.getTitle();
@@ -216,5 +208,11 @@ public class MainActivity extends AppCompatActivity implements MainView{
         }else if (requestCode == EDIT_CODE && resultCode == RESULT_OK){
             presenter.getData();
         }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        presenter.getData();
     }
 }

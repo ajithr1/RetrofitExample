@@ -13,10 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".CURD.activity.EditorActivity"
+        <activity android:name=".CURD.View.EditorActivity"
             android:label="Add new"
             android:launchMode="singleTask"/>
-        <activity android:name=".CURD.main.MainActivity">
+        <activity android:name=".CURD.View.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW"/>

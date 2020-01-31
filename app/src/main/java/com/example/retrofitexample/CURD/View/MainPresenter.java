@@ -1,10 +1,10 @@
-package com.example.retrofitexample.CURD.main;
+package com.example.retrofitexample.CURD.View;
 
 import android.util.Log;
 
-import com.example.retrofitexample.CURD.Model.Note;
-import com.example.retrofitexample.CURD.api.ApiClientCurd;
-import com.example.retrofitexample.CURD.api.ApiInterface;
+import com.example.retrofitexample.CURD.ModelRetrofit.Note;
+import com.example.retrofitexample.CURD.ModelRetrofit.ApiClientCurd;
+import com.example.retrofitexample.CURD.ModelRetrofit.ApiInterface;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static com.example.retrofitexample.CURD.main.MainActivity.TAG;
+import static com.example.retrofitexample.CURD.View.MainActivity.TAG;
 
 class MainPresenter {
 
@@ -24,7 +24,6 @@ class MainPresenter {
 
     void getData() {
 
-        view.showLoading();
         Log.d(TAG, "getData: Presenter");
 
         ApiInterface apiInterface = ApiClientCurd.getRetrofit().create(ApiInterface.class);
@@ -41,7 +40,6 @@ class MainPresenter {
 
             @Override
             public void onFailure(Call<List<Note>> call, Throwable t) {
-                view.hideLoading();
                 Log.d(TAG, "onFailure: Presenter");
                 view.onErrorLoading(t.getMessage());
             }
