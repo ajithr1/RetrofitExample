@@ -195,7 +195,6 @@ public class MainActivity extends AppCompatActivity implements MainView{
             int id = note.getId();
             String title = note.getTitle();
             String message = note.getNote();
-            Log.d(TAG, "onItemClick: "+message);
             int color = note.getColor();
 
             Intent intent = new Intent(MainActivity.this, EditorActivity.class);

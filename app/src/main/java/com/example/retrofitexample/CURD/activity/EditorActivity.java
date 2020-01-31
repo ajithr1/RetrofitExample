@@ -58,10 +58,8 @@ public class EditorActivity extends AppCompatActivity implements EditorView{
         Intent intent = getIntent();
         id = intent.getIntExtra("id", 0);
         title = intent.getStringExtra("title");
-        note = intent.getStringExtra("note");
+        note = intent.getStringExtra("message");
         color = intent.getIntExtra("color", 0);
-
-
 
         setDataFromIntentExtra(title, note, color);
     }
