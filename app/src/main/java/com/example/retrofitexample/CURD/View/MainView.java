@@ -8,4 +8,10 @@ public interface MainView {
 
     void onGetResult(List<Note> notes);
     void onErrorLoading(String message);
+
+    void insert(Note note);
+
+    void edit(Note note);
+
+    void delete(int id);
 }

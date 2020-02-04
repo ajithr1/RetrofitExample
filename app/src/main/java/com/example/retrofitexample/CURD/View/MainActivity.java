@@ -10,12 +10,16 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.retrofitexample.CURD.ModelRetrofit.Note;
 import com.example.retrofitexample.CURD.Presenter.Presenter;
 import com.example.retrofitexample.CURD.Presenter.PresenterInterface;
+import com.example.retrofitexample.CURD.SQLite.MessageRepository;
+import com.example.retrofitexample.CURD.SQLite.MessageViewModel;
 import com.example.retrofitexample.Control.ApiClientSwitchControl;
 import com.example.retrofitexample.Control.JsonPlaceHolderApi;
 import com.example.retrofitexample.Control.Post;
@@ -41,9 +45,11 @@ public class MainActivity extends AppCompatActivity implements MainView{
 
     public static final String TAG = "ajju";
 
+    private MessageViewModel messageViewModel;
+
     PresenterInterface presenter;
     MainAdapter adapter;
-    List<Note> notes;
+    MessageRepository repository;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -82,6 +88,14 @@ public class MainActivity extends AppCompatActivity implements MainView{
 
         presenter = new Presenter(this);
         presenter.getData();
+
+        messageViewModel = ViewModelProviders.of(this).get(MessageViewModel.class);
+        messageViewModel.getAllNotes().observe(this, new Observer<List<Note>>() {
+            @Override
+            public void onChanged(List<Note> messages) {
+                //adapter.setNotes(messages);
+            }
+        });
     }
 
     private void controlOn() {
@@ -169,6 +183,7 @@ public class MainActivity extends AppCompatActivity implements MainView{
 
     @Override
     public void onGetResult(List<Note> notes) {
+
         Log.d(TAG, "onGetResult: MainActivity"+notes);
         adapter = new MainAdapter(this, notes, listener);
         recyclerView.setAdapter(adapter);
@@ -178,6 +193,25 @@ public class MainActivity extends AppCompatActivity implements MainView{
     @Override
     public void onErrorLoading(String message) {
         Log.d(TAG, "onErrorLoading: MainActivity"+message);
+    }
+
+    @Override
+    public void insert(Note note) {
+        repository = new MessageRepository(getApplication());
+        Log.d(TAG, "insert: MainActivity SQLite"+note);
+        repository.insert(note);
+    }
+
+    @Override
+    public void edit(Note note) {
+        repository = new MessageRepository(getApplication());
+        repository.edit(note);
+    }
+
+    @Override
+    public void delete(int id) {
+        repository = new MessageRepository(getApplication());
+        repository.delete(id);
     }
 
     private MainAdapter.RecyclerViewAdapter.ItemClickListener listener = new MainAdapter.RecyclerViewAdapter.ItemClickListener() {

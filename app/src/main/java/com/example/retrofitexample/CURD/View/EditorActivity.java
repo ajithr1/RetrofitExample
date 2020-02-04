@@ -2,7 +2,6 @@ package com.example.retrofitexample.CURD.View;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,8 +30,6 @@ public class EditorActivity extends AppCompatActivity implements EditorView{
 
     int color, id;
     String title, note;
-
-    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

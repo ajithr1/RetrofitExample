@@ -1,12 +1,18 @@
 package com.example.retrofitexample.CURD.ModelRetrofit;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Entity(tableName = "ajith")
 public class Note {
 
     @Expose
-    @SerializedName("id") private int id;
+    @SerializedName("id")
+    @PrimaryKey(autoGenerate = true)
+    private int id;
     @Expose
     @SerializedName("title") private String title;
     @Expose

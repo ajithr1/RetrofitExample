@@ -17,4 +17,10 @@ public interface PresenterInterface {
     void onGetResult(List<Note> notes);
 
     void onErrorLoading(String message);
+
+    void insertDb(Note note);
+
+    void editDb(Note note);
+
+    void deleteDb(int id);
 }

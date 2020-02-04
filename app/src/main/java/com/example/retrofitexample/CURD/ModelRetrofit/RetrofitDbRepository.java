@@ -32,6 +32,8 @@ public class RetrofitDbRepository implements RetrofitDb {
     @Override
     public void insertInToRetrofit(String title, final String note, int color) {
 
+        presenterInterface = new Presenter(view);
+
         ApiInterface apiInterface = ApiClientCurd.getRetrofit().create(ApiInterface.class);
 
         Call<Note> call = apiInterface.saveNote(title, note, color);
@@ -42,26 +44,26 @@ public class RetrofitDbRepository implements RetrofitDb {
 
                 if (response.isSuccessful() && response.body() != null) {
 
-                    boolean success = response.body().getSuccess();
+                    Log.d(TAG, "insertInToRetrofit SQLite");
 
-                    if (success) {
-                        Log.d(TAG, "insert into SQLite");
+                    Note note = response.body();
 
-                    } else {
-                        Log.d(TAG, "insert into SQLite failed");
-                    }
+                    presenterInterface.insertDb(note);
+
                 }
             }
 
             @Override
             public void onFailure(Call<Note> call, Throwable t) {
-                Log.d(TAG, "insert into Retrofit failed");
+                Log.d(TAG, "insertInToRetrofit failed" + t.getMessage());
             }
         });
     }
 
     @Override
     public void editInRetrofit(int id, String title, String note, int color) {
+
+        presenterInterface = new Presenter(view);
 
         ApiInterface apiInterface = ApiClientCurd.getRetrofit().create(ApiInterface.class);
 
@@ -73,28 +75,24 @@ public class RetrofitDbRepository implements RetrofitDb {
 
                 if (response.isSuccessful() && response.body() != null) {
 
+                    Note note = response.body();
+                    presenterInterface.editDb(note);
 
-                    boolean success = response.body().getSuccess();
-
-                    if (success) {
-                        Log.d(TAG, "edit in SQLite");
-
-                    } else {
-                        Log.d(TAG, "edit in SQLite failed");
-                    }
                 }
             }
 
             @Override
             public void onFailure(Call<Note> call, Throwable t) {
-                Log.d(TAG, "edit in Retrofit failed");
+                Log.d(TAG, "editInRetrofit in Retrofit failed");
             }
         });
 
     }
 
     @Override
-    public void deleteFromRetrofit(int id) {
+    public void deleteFromRetrofit(final int id) {
+
+        presenterInterface = new Presenter(view);
 
         ApiInterface apiInterface = ApiClientCurd.getRetrofit().create(ApiInterface.class);
         Call<Note> call = apiInterface.deleteNote(id);
@@ -105,14 +103,7 @@ public class RetrofitDbRepository implements RetrofitDb {
 
                 if (response.isSuccessful() && response.body() != null){
 
-                    boolean success = response.body().getSuccess();
-
-                    if (success) {
-                        Log.d(TAG, "deleted");
-
-                    } else {
-                        Log.d(TAG, "delete SQLite failed");
-                    }
+                    presenterInterface.deleteDb(id);
                 }
             }
 

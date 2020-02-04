@@ -1,12 +1,17 @@
 package com.example.retrofitexample.CURD.Presenter;
 
+import android.util.Log;
+
 import com.example.retrofitexample.CURD.ModelRetrofit.Note;
 import com.example.retrofitexample.CURD.ModelRetrofit.RetrofitDb;
 import com.example.retrofitexample.CURD.ModelRetrofit.RetrofitDbRepository;
 import com.example.retrofitexample.CURD.View.EditorView;
+import com.example.retrofitexample.CURD.View.MainActivity;
 import com.example.retrofitexample.CURD.View.MainView;
 
 import java.util.List;
+
+import static com.example.retrofitexample.CURD.View.MainActivity.TAG;
 
 public class Presenter implements PresenterInterface {
 
@@ -55,6 +60,25 @@ public class Presenter implements PresenterInterface {
     @Override
     public void onErrorLoading(String message) {
         mainView.onErrorLoading(message);
+    }
+
+    @Override
+    public void insertDb(Note note) {
+        mainView = new MainActivity();
+        Log.d(TAG, "insertDb: "+note);
+        mainView.insert(note);
+    }
+
+    @Override
+    public void editDb(Note note) {
+        mainView = new MainActivity();
+        mainView.edit(note);
+    }
+
+    @Override
+    public void deleteDb(int id) {
+        mainView = new MainActivity();
+        mainView.delete(id);
     }
 
 }
