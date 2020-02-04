@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.retrofitexample.CURD.ModelRetrofit.Note;
-import com.example.retrofitexample.CURD.Presenter.Presenter;
 import com.example.retrofitexample.CURD.Presenter.PresenterInterface;
 import com.example.retrofitexample.CURD.SQLite.MessageRepository;
 import com.example.retrofitexample.CURD.SQLite.MessageViewModel;
@@ -36,20 +34,16 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements MainView{
 
-    private static final int EDIT_CODE = 200;
-    private static final int ADD_CODE = 100;
     private TextView textViewResult;
     private Switch aSwitch;
-    private FloatingActionButton fab;
-    private RecyclerView recyclerView;
 
     public static final String TAG = "ajju";
-
-    private MessageViewModel messageViewModel;
 
     PresenterInterface presenter;
     MainAdapter adapter;
     MessageRepository repository;
+
+    List<Note> notes;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -61,10 +55,12 @@ public class MainActivity extends AppCompatActivity implements MainView{
 
         textViewResult = findViewById(R.id.code);
         aSwitch = findViewById(R.id.switch1);
-        fab = findViewById(R.id.floatingActionButton);
-        recyclerView = findViewById(R.id.recycle);
+        FloatingActionButton fab = findViewById(R.id.floatingActionButton);
+        RecyclerView recyclerView = findViewById(R.id.recycle);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new MainAdapter(this, notes, listener);
+        recyclerView.setAdapter(adapter);
 
         aSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,18 +78,15 @@ public class MainActivity extends AppCompatActivity implements MainView{
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.this.startActivityForResult(new Intent(MainActivity.this, EditorActivity.class), ADD_CODE);
+                MainActivity.this.startActivity(new Intent(MainActivity.this, EditorActivity.class));
             }
         });
 
-        presenter = new Presenter(this);
-        presenter.getData();
-
-        messageViewModel = ViewModelProviders.of(this).get(MessageViewModel.class);
+        MessageViewModel messageViewModel = ViewModelProviders.of(this).get(MessageViewModel.class);
         messageViewModel.getAllNotes().observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(List<Note> messages) {
-                //adapter.setNotes(messages);
+                adapter.setNotes(messages);
             }
         });
     }
@@ -182,20 +175,6 @@ public class MainActivity extends AppCompatActivity implements MainView{
     }
 
     @Override
-    public void onGetResult(List<Note> notes) {
-
-        Log.d(TAG, "onGetResult: MainActivity"+notes);
-        adapter = new MainAdapter(this, notes, listener);
-        recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onErrorLoading(String message) {
-        Log.d(TAG, "onErrorLoading: MainActivity"+message);
-    }
-
-    @Override
     public void insert(Note note) {
         repository = new MessageRepository(getApplication());
         Log.d(TAG, "insert: MainActivity SQLite"+note);
@@ -229,24 +208,7 @@ public class MainActivity extends AppCompatActivity implements MainView{
             intent.putExtra("message", message);
             intent.putExtra("color", color);
 
-            startActivityForResult(intent, EDIT_CODE);
+            startActivity(intent);
         }
     };
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == ADD_CODE && resultCode == RESULT_OK){
-            presenter.getData();
-        }else if (requestCode == EDIT_CODE && resultCode == RESULT_OK){
-            presenter.getData();
-        }
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        presenter.getData();
-    }
 }

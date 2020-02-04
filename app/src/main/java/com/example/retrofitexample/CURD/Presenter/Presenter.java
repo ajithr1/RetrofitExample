@@ -9,8 +9,6 @@ import com.example.retrofitexample.CURD.View.EditorView;
 import com.example.retrofitexample.CURD.View.MainActivity;
 import com.example.retrofitexample.CURD.View.MainView;
 
-import java.util.List;
-
 import static com.example.retrofitexample.CURD.View.MainActivity.TAG;
 
 public class Presenter implements PresenterInterface {
@@ -44,22 +42,6 @@ public class Presenter implements PresenterInterface {
     public void delete(int id) {
         retrofitDb = new RetrofitDbRepository(editorView);
         retrofitDb.deleteFromRetrofit(id);
-    }
-
-    @Override
-    public void getData() {
-        retrofitDb = new RetrofitDbRepository(mainView);
-        retrofitDb.getAllFromRetrofit();
-    }
-
-    @Override
-    public void onGetResult(List<Note> notes) {
-        mainView.onGetResult(notes);
-    }
-
-    @Override
-    public void onErrorLoading(String message) {
-        mainView.onErrorLoading(message);
     }
 
     @Override

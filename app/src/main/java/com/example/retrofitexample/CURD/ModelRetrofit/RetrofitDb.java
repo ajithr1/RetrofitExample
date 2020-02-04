@@ -7,6 +7,4 @@ public interface RetrofitDb {
     void editInRetrofit(final int id, final String title, final String note, final int color);
 
     void deleteFromRetrofit(final int id);
-
-    void getAllFromRetrofit();
 }

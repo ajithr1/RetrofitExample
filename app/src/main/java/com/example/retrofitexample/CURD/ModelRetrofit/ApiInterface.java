@@ -11,7 +11,7 @@ import retrofit2.http.POST;
 public interface ApiInterface {
 
     @FormUrlEncoded
-    @POST("save.php")
+    @POST("insert.php")
     Call<Note> saveNote(
             @Field("title") String title,
             @Field("note") String note,

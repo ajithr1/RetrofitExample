@@ -7,8 +7,6 @@ import com.example.retrofitexample.CURD.Presenter.PresenterInterface;
 import com.example.retrofitexample.CURD.View.EditorView;
 import com.example.retrofitexample.CURD.View.MainView;
 
-import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -113,30 +111,5 @@ public class RetrofitDbRepository implements RetrofitDb {
             }
         });
 
-    }
-
-    @Override
-    public void getAllFromRetrofit() {
-
-        presenterInterface = new Presenter(view);
-
-        ApiInterface apiInterface = ApiClientCurd.getRetrofit().create(ApiInterface.class);
-        Call<List<Note>> call = apiInterface.getAllNotes();
-
-        call.enqueue(new Callback<List<Note>>() {
-            @Override
-            public void onResponse(Call<List<Note>> call, Response<List<Note>> response) {
-                if (response.isSuccessful() && response.body() != null){
-                    Log.d(TAG, "onResponse: Db"+response.body());
-                    presenterInterface.onGetResult(response.body());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Note>> call, Throwable t) {
-                Log.d(TAG, "onFailure: Presenter");
-                presenterInterface.onErrorLoading(t.getMessage());
-            }
-        });
     }
 }
