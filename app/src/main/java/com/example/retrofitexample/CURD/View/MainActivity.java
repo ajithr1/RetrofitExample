@@ -26,6 +26,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -57,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements MainView{
         aSwitch = findViewById(R.id.switch1);
         FloatingActionButton fab = findViewById(R.id.floatingActionButton);
         RecyclerView recyclerView = findViewById(R.id.recycle);
+
+        notes = new ArrayList<>();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MainAdapter(this, notes, listener);
@@ -165,6 +168,7 @@ public class MainActivity extends AppCompatActivity implements MainView{
                 textViewResult.setText(""+response.code());
             }
 
+            @SuppressLint("SetTextI18n")
             @Override
             public void onFailure(Call<Post> call, Throwable t) {
                 Log.d(TAG, "onFailure: ");

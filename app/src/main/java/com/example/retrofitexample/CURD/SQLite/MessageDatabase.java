@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase;
 import com.example.retrofitexample.CURD.ModelRetrofit.Note;
 
 @Database(entities = {Note.class}, version = 3, exportSchema = false)
-public abstract class MessageDatabase extends RoomDatabase {
+abstract class MessageDatabase extends RoomDatabase {
 
     private static MessageDatabase messageDatabase;
     public abstract NoteDao messageDao();
